@@ -1,30 +1,28 @@
 #!/usr/bin/python3
 
 from routeros_api.routeros_api import Api
-import sys, argparse, json, datetime, re
+import sys, json, re
 
 peers = {}
 multipler = [1, 60, 3600, 86400, 604800]
 peers['data'] = []
 
+if len(sys.argv) == 5:
+  querytype = sys.argv[1]
+  hostname = sys.argv[2]
+  username = sys.argv[3]
+  pwd = sys.argv[4]
+if len(sys.argv) == 6:
+  peername = sys.argv[5]
+
 if __name__ == "__main__":
-   parser = argparse.ArgumentParser(description='usefull arguments')
-   parser.add_argument('-t', '--type', required=True, dest='querytype', choices=['names','field'], help='Define query type: names | field')
-   parser.add_argument('--hostname', required=True, dest='hostname')
-   parser.add_argument('--username', required=True, dest='username')
-   parser.add_argument('--password', required=True, dest='pwd')
-   parser.add_argument('--peername', dest='peername')
-   parser.add_argument('--peerfieldname', dest='peerfieldname', choices=['state','uptime'])
-   args = parser.parse_args()
+  if len(sys.argv) != 1:
+    router = Api(hostname, user=username, password=pwd)
 
-#   print(args.hostname)
-
-   router = Api(args.hostname, user=args.username, password=args.pwd)
-
-   # return the selected peer state and uptime defined as argument in peerfieldname
-   if args.querytype == "field":
-      answer = router.talk('/routing/bgp/peer/print\n?name=' + args.peername)
-      if args.peerfieldname == "state":
+    # return the selected peer state and uptime defined as argument in peerfieldname
+    if (querytype == "state") or (querytype == "uptime"):
+      answer = router.talk('/routing/bgp/peer/print\n?name=' + peername)
+      if querytype == "state":
         state = answer[0]['state']
         if state == 'established':
            print(4)
@@ -37,7 +35,7 @@ if __name__ == "__main__":
         elif state == 'idle':
            print(1)
 
-      if args.peerfieldname == "uptime":
+      if querytype == "uptime":
         rosuptime=0
         uptime = answer[0]['uptime']
 
@@ -50,8 +48,8 @@ if __name__ == "__main__":
 
         print(rosuptime)
 
-   # return peer names in json for disabled=false peers
-   if args.querytype == "names":
+    # return peer names in json for disabled=false peers
+    if querytype == "names":
       answer = router.talk('/routing/bgp/peer/print\n=status=')
       for val in answer:
          if val['disabled'] == 'false':
