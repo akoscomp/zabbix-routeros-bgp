@@ -7,7 +7,7 @@ peers = {}
 multipler = [1, 60, 3600, 86400, 604800]
 peers['data'] = []
 
-if len(sys.argv) == 5:
+if len(sys.argv) >= 5:
   querytype = sys.argv[1]
   hostname = sys.argv[2]
   username = sys.argv[3]
