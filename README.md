@@ -22,13 +22,12 @@ You should also import **zbx_routeros_bgp.xml** zabbix template on zabbix server
 **Simple script test**:
 
 ```shell
- bgp_peer.py -t names --hostname <RouterOS_HOSTNAME or IP> --username <RouterOS_USERNAME> --password <RouterOS_PASSWORD>
- bgp_peer.py -t field --hostname <RouterOS_HOSTNAME or IP> --username <RouterOS_USERNAME> --password <RouterOS_PASSWORD> --peername <bgp peer name> --peerfieldname=state|uptime
+ bgp_peer.py names|uptime|host <RouterOS_HOSTNAME or IP> <RouterOS_USERNAME> <RouterOS_PASSWORD> <BGP_peer_name>
 ```
 
 **Zabbix Discovery Key**:
 
 
-bgp_peer.py["{HOST.CONN}","{$ROUTEROS_USERNAME}","{$ROUTEROS_PASSWORD}"]
+bgp_peer.py["names|uptime|host", "{HOST.CONN}","{$ROUTEROS_USERNAME}","{$ROUTEROS_PASSWORD}"]
 
 *You should define these macros:  "{$ROUTEROS_USERNAME}" and "{$ROUTEROS_PASSWORD}"
