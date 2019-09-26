@@ -4,7 +4,7 @@ from routeros_api.routeros_api import Api
 import sys, json, re
 
 peers = {}
-multipler = [1, 60, 3600, 86400, 604800]
+multipler = {"s": 1, "m": 60, "h": 3600, "d": 86400, "w": 604800}
 peers['data'] = []
 
 if len(sys.argv) >= 5:
@@ -41,10 +41,9 @@ if __name__ == "__main__":
 
         #parse 3d20h9m20s format
         numbers = re.findall(r'\d+', uptime)
-        numbers.reverse()
-
+        timeunit = re.findall(r'\D+', uptime)
         for current in range(len(numbers)):
-           rosuptime += int(numbers[current]) * multipler[current]
+           rosuptime += int(numbers[current]) * multipler[timeunit[current]]
 
         print(rosuptime)
 
